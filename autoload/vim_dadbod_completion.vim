@@ -1,6 +1,7 @@
 let s:cache = {}
 let s:buffers = {}
-let s:filetypes = ['sql', 'mysql', 'plsql']
+let s:filetypes = ['sql', 'mysql', 'plsql', 'conf']
+"limiting this to only function in certain filetypes seems less than ideal..
 
 let s:quotes = vim_dadbod_completion#schemas#get_quotes_rgx()
 let s:trigger_rgx = printf('\(%s\|\.\)$', s:quotes.open)
@@ -242,6 +243,16 @@ function! s:save_to_cache(bufnr, db, table, dbui) abort
       call vim_dadbod_completion#job#run(scmq[0], function('s:parse_schemas', [a:db]), scmq[1])
     endif
   endif
+endfunction
+
+function! vim_dadbod_completion#get_cache()
+  let bufnr = bufnr('%')
+  if !has_key(s:buffers, bufnr)
+    call vim_dadbod_completion#fetch(bufnr(''))
+  endif
+  let buf = s:buffers[bufnr]
+  let cache_db = s:cache[buf.db]
+  return cache_db
 endfunction
 
 function! s:parse_functions(db, functions) abort

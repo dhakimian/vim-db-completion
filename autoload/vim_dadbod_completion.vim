@@ -250,6 +250,9 @@ function! vim_dadbod_completion#get_cache()
   if !has_key(s:buffers, bufnr)
     call vim_dadbod_completion#fetch(bufnr(''))
   endif
+  if !has_key(s:buffers, bufnr)
+    return {}
+  endif
   let buf = s:buffers[bufnr]
   let cache_db = s:cache[buf.db]
   return cache_db
